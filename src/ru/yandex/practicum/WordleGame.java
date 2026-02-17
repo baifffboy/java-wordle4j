@@ -1,5 +1,8 @@
 package ru.yandex.practicum;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /*
 в этом классе хранится словарь и состояние игры
     текущий шаг
@@ -14,10 +17,48 @@ package ru.yandex.practicum;
  */
 public class WordleGame {
 
-    private String answer;
-
+    private static final int COUNT_OF_ATTEMPTS = 6;
+    private final String answer;
     private int steps;
+    private final WordleDictionary dictionary;
+    private Map<Integer, String> historyOfWords;
 
-    private WordleDictionary dictionary;
+    public WordleGame(String answer, int steps, WordleDictionary dictionary) {
+        this.answer = answer;
+        this.steps = steps;
+        this.dictionary = dictionary;
+        historyOfWords = new LinkedHashMap<>(COUNT_OF_ATTEMPTS);
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public int getSteps() {
+        return steps;
+    }
+
+    public WordleDictionary getDictionary() {
+        return dictionary;
+    }
+
+    public void setSteps(int steps) {
+        this.steps = steps;
+    }
+
+    public String analyze(String word) {
+        if (dictionary.check(word)) {
+            setSteps(getSteps() + 1);
+            addWord(word);
+            return dictionary.comparisonWords(word, answer);
+        } else {
+            System.out.println("Вы ввели несуществующее/неподходящее по параметрам слово");
+            return null;
+        }
+    }
+
+    public void addWord(String word){
+        historyOfWords.put(getSteps(), word);
+    }
 
 }
