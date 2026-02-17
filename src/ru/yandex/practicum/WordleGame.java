@@ -60,6 +60,10 @@ public class WordleGame {
         }
     }
 
+    public boolean win(String word) {
+        return answer.equals(analyze(word));
+    }
+
     public void addWord(String word){
         historyOfWords.put(getSteps(), word);
     }
