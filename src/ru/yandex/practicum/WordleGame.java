@@ -47,6 +47,9 @@ public class WordleGame {
     }
 
     public String analyze(String word) {
+        if (word.isEmpty()) {
+            return getHelp(historyOfWords, answer);
+        }
         if (dictionary.check(word)) {
             setSteps(getSteps() + 1);
             addWord(word);
@@ -59,6 +62,10 @@ public class WordleGame {
 
     public void addWord(String word){
         historyOfWords.put(getSteps(), word);
+    }
+
+    public String getHelp(Map<Integer, String> historyOfWords, String answer) {
+        return dictionary.getHelpWord(historyOfWords, answer);
     }
 
 }

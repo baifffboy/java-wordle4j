@@ -20,7 +20,7 @@ public class WordleDictionaryLoader {
         String path = "../../words_ru.txt";
         try(BufferedReader reader = new BufferedReader(new FileReader(path))) {
             while(reader.ready()){
-                if(reader.readLine().length() == LENGTH_OF_WORD) list.add(reader.readLine());
+                if(reader.readLine().length() == LENGTH_OF_WORD) list.add(reader.readLine().toLowerCase().replaceAll("ё", "е"));
             }
             return new WordleDictionary(list);
         } catch(FileNotFoundException exception) {
