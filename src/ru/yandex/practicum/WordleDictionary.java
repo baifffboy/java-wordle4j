@@ -28,7 +28,8 @@ public class WordleDictionary {
                 }
             }
         } else {
-            System.out.printf("Слово содержит больше или меньше %d букв", LENGTH_OF_WORD);
+            System.out.printf("Слово содержит больше или меньше %d букв\n", LENGTH_OF_WORD);
+            return false;
         }
         return false;
     }

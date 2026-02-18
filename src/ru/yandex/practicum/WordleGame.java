@@ -55,13 +55,8 @@ public class WordleGame {
             addWord(word);
             return dictionary.comparisonWords(word, answer);
         } else {
-            System.out.println("Вы ввели несуществующее/неподходящее по параметрам слово");
             return null;
         }
-    }
-
-    public boolean win(String word) {
-        return answer.equals(analyze(word));
     }
 
     public void addWord(String word){

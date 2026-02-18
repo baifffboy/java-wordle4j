@@ -19,20 +19,27 @@ public class Wordle {
         final int COUNT_OF_STEP = 6;
         WordleDictionary dict = WordleDictionaryLoader.uploadingFiveLetterWords();
         Random random = new Random();
-        WordleGame game = new WordleGame(dict.getWords().get(random.nextInt(dict.getWords().size())), 0, dict);
-        System.out.printf("Вводите поочередно слова, у вас есть %d попыток", COUNT_OF_STEP);
+        String answer = dict.getWords().get(random.nextInt(dict.getWords().size()));
+        WordleGame game = new WordleGame(answer, 0, dict);
+        System.out.printf("Вводите поочередно слова, у вас есть %d попыток\n", COUNT_OF_STEP);
         Scanner scanner = new Scanner(System.in);
-        String word = scanner.nextLine();
         while (true) {
-            if (game.win(word)){
-                System.out.printf("Вы отгадали слово: %s", game.getAnswer());
-                break;
-            }
             if (game.getSteps() == COUNT_OF_STEP) {
                 System.out.println("Вы проиграли!");
                 break;
             }
+            String word = scanner.nextLine();
+            if (answer.equals(word)){
+                System.out.printf("Вы отгадали слово: %s", game.getAnswer());
+                break;
+            }
+            String answerToTheWord = game.analyze(word);
+            if (answerToTheWord != null) {
+                System.out.println(answerToTheWord);
+                if (word.isEmpty()) System.out.println(game.analyze(answerToTheWord));
+            } else {
+                System.out.println("Слово введено некорректно или несоответствует параметрам");
+            }
         }
     }
-
 }

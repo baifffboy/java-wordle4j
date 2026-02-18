@@ -17,10 +17,11 @@ public class WordleDictionaryLoader {
 
     public static WordleDictionary uploadingFiveLetterWords() throws FileNotFoundException {
         List<String> list = new ArrayList<>();
-        String path = "../../words_ru.txt";
+        String path = "words_ru.txt";
         try(BufferedReader reader = new BufferedReader(new FileReader(path))) {
             while(reader.ready()){
-                if(reader.readLine().length() == LENGTH_OF_WORD) list.add(reader.readLine().toLowerCase().replaceAll("ё", "е"));
+                String word = reader.readLine();
+                if(word.length() == LENGTH_OF_WORD) list.add(word.toLowerCase().replaceAll("ё", "е"));
             }
             return new WordleDictionary(list);
         } catch(FileNotFoundException exception) {
