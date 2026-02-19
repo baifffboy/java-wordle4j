@@ -21,9 +21,9 @@ public class WordleDictionary {
     }
 
     public boolean check(String word) throws InvalidWordLengthException, WordNotFoundException {
-        if(word.length() == LENGTH_OF_WORD){
-            for(String i : words) {
-                if(i.equals(word)){
+        if (word.length() == LENGTH_OF_WORD) {
+            for (String i : words) {
+                if (i.equals(word)) {
                     return true;
                 }
             }
@@ -33,16 +33,16 @@ public class WordleDictionary {
         }
     }
 
-    public String comparisonWords(String word, String answer){
+    public String comparisonWords(String word, String answer) {
         StringBuilder signsAnswer = new StringBuilder(LENGTH_OF_WORD);
         return checkInCycleWithRecursion(word, answer, signsAnswer, 0).toString();
     }
 
-    public StringBuilder checkInCycleWithRecursion(String word, String answer, StringBuilder signsAnswer, int currentIndex){
+    public StringBuilder checkInCycleWithRecursion(String word, String answer, StringBuilder signsAnswer, int currentIndex) {
         char currentLetterCheck = answer.toCharArray()[0];
         if (currentIndex == 4) {
-            for(char words : word.toCharArray()){
-                if(words == currentLetterCheck) {
+            for (char words : word.toCharArray()) {
+                if (words == currentLetterCheck) {
                     if (currentIndex == word.indexOf(words)) {
                         signsAnswer.append('+');
                     } else {
@@ -106,8 +106,8 @@ public class WordleDictionary {
         return historyOfWords.containsValue(word);
     }
 
-    public boolean isLetterInWordExistOnYourPlace(Map<Integer, Character> guessLettersOnYourPlace, String word){
-        for (int t : guessLettersOnYourPlace.keySet()){ // проверка находятся ли в нашем искомом
+    public boolean isLetterInWordExistOnYourPlace(Map<Integer, Character> guessLettersOnYourPlace, String word) {
+        for (int t : guessLettersOnYourPlace.keySet()) { // проверка находятся ли в нашем искомом
             // слове ТОЧНО известные буквы на своих местах
             if (word.charAt(t) != guessLettersOnYourPlace.get(t)) {
                 return false;
@@ -116,8 +116,8 @@ public class WordleDictionary {
         return true;
     }
 
-    public boolean isLetterInWordExistButNotOnYourPlace(Map<Integer, Character> guessLettersNotOnYourPlace, String word){
-        for (int t : guessLettersNotOnYourPlace.keySet()){ // проверка находятся ли в слове те буквы
+    public boolean isLetterInWordExistButNotOnYourPlace(Map<Integer, Character> guessLettersNotOnYourPlace, String word) {
+        for (int t : guessLettersNotOnYourPlace.keySet()) { // проверка находятся ли в слове те буквы
             // которые там есть но находятся не на своем месте,
             // и проверка чтобы они были на другом месте в слове - подсказке
             if (!word.contains(guessLettersNotOnYourPlace.get(t).toString())) return false;
@@ -126,17 +126,17 @@ public class WordleDictionary {
         return true;
     }
 
-    public boolean isLetterThatNotExistInWord(Set<Character> lettersThatNotExist, String word){
+    public boolean isLetterThatNotExistInWord(Set<Character> lettersThatNotExist, String word) {
         // проверка что букв, которых мы узнали что нет (из предыдущих итераций), не будет в слове - подсказке
-        for (Character i : lettersThatNotExist){
-            if(word.contains(i.toString())) return false;
+        for (Character i : lettersThatNotExist) {
+            if (word.contains(i.toString())) return false;
         }
         return true;
     }
 
-    public Map<String, String> comparisonAllHistoryWords(Map<Integer, String> historyOfWords, String answer){
+    public Map<String, String> comparisonAllHistoryWords(Map<Integer, String> historyOfWords, String answer) {
         Map<String, String> comparisonMap = new HashMap<>(); // ключ - слово игрока значение - его сравнение с ответом (схема)
-        for(int i : historyOfWords.keySet()) {
+        for (int i : historyOfWords.keySet()) {
             comparisonMap.put(historyOfWords.get(i), comparisonWords(historyOfWords.get(i), answer));
         }
         return comparisonMap;
@@ -172,10 +172,10 @@ public class WordleDictionary {
                 }
             }
             if (lastComparison.contains("-")) {
-                for(int t : historyOfWords.keySet()){
+                for (int t : historyOfWords.keySet()) {
                     String intermediateResult = comparisonWords(historyOfWords.get(t), answer);
                     int index = 0;
-                    for (char i : intermediateResult.toCharArray()){
+                    for (char i : intermediateResult.toCharArray()) {
                         if (i == '-') lettersThatNotExist.add(historyOfWords.get(t).toCharArray()[index]);
                         index++;
                     }
