@@ -18,13 +18,13 @@ public class WordleDictionaryLoader {
     public static WordleDictionary uploadingFiveLetterWords() throws DictionaryLoadException, IOException {
         List<String> list = new ArrayList<>();
         String path = "words_ru.txt";
-        try(BufferedReader reader = new BufferedReader(new FileReader(path))) {
-            while(reader.ready()){
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+            while (reader.ready()) {
                 String word = reader.readLine();
-                if(word.length() == LENGTH_OF_WORD) list.add(word.toLowerCase().replaceAll("ё", "е"));
+                if (word.length() == LENGTH_OF_WORD) list.add(word.toLowerCase().replaceAll("ё", "е"));
             }
             return new WordleDictionary(list);
-        } catch(FileNotFoundException  exception) {
+        } catch (FileNotFoundException exception) {
             throw new DictionaryLoadException("По указанному пути не найдено имя файла! " + exception.getMessage(), exception);
         } catch (IOException e) {
             throw new IOException("Ошибка чтения файла! " + e.getMessage());

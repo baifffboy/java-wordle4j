@@ -59,7 +59,7 @@ public class WordleGame {
         }
     }
 
-    public void addWord(String word){
+    public void addWord(String word) {
         historyOfWords.put(getSteps(), word);
     }
 

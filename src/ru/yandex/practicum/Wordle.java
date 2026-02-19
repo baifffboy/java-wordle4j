@@ -30,7 +30,7 @@ public class Wordle {
                 break;
             }
             String word = scanner.nextLine();
-            if (answer.equals(word)){
+            if (answer.equals(word)) {
                 System.out.printf("Вы отгадали слово: %s\n", game.getAnswer());
                 break;
             }
