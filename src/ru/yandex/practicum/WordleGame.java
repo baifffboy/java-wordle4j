@@ -46,7 +46,7 @@ public class WordleGame {
         this.steps = steps;
     }
 
-    public String analyze(String word) {
+    public String analyze(String word) throws WordNotFoundException, InvalidWordLengthException {
         if (word.isEmpty()) {
             return getHelp(historyOfWords, answer);
         }

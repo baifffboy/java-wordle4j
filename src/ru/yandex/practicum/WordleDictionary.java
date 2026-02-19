@@ -20,18 +20,17 @@ public class WordleDictionary {
         return words;
     }
 
-    public boolean check(String word) {
+    public boolean check(String word) throws InvalidWordLengthException, WordNotFoundException {
         if(word.length() == LENGTH_OF_WORD){
             for(String i : words) {
                 if(i.equals(word)){
                     return true;
                 }
             }
+            throw new WordNotFoundException(word);
         } else {
-            System.out.printf("Слово содержит больше или меньше %d букв\n", LENGTH_OF_WORD);
-            return false;
+            throw new InvalidWordLengthException(LENGTH_OF_WORD, word.length());
         }
-        return false;
     }
 
     public String comparisonWords(String word, String answer){

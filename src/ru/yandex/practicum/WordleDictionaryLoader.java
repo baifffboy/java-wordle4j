@@ -15,7 +15,7 @@ import java.util.List;
 public class WordleDictionaryLoader {
     public static final int LENGTH_OF_WORD = 5;
 
-    public static WordleDictionary uploadingFiveLetterWords() throws FileNotFoundException {
+    public static WordleDictionary uploadingFiveLetterWords() throws DictionaryLoadException, IOException {
         List<String> list = new ArrayList<>();
         String path = "words_ru.txt";
         try(BufferedReader reader = new BufferedReader(new FileReader(path))) {
@@ -24,12 +24,10 @@ public class WordleDictionaryLoader {
                 if(word.length() == LENGTH_OF_WORD) list.add(word.toLowerCase().replaceAll("ё", "е"));
             }
             return new WordleDictionary(list);
-        } catch(FileNotFoundException exception) {
-            System.out.println("По указанному пути не найдено имя файла! " + exception.getMessage());
-            return new WordleDictionary(new ArrayList<>());
+        } catch(FileNotFoundException  exception) {
+            throw new DictionaryLoadException("По указанному пути не найдено имя файла! " + exception.getMessage(), exception);
         } catch (IOException e) {
-            System.out.println("Ошибка чтения файла! " + e.getMessage());
-            return new WordleDictionary(new ArrayList<>());
+            throw new IOException("Ошибка чтения файла! " + e.getMessage());
         }
     }
 }

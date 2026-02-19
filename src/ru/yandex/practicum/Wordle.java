@@ -1,6 +1,7 @@
 package ru.yandex.practicum;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -15,7 +16,7 @@ import java.util.Scanner;
  */
 public class Wordle {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException, GameStateException, DictionaryLoadException, WordNotFoundException, InvalidWordLengthException {
         final int COUNT_OF_STEP = 6;
         WordleDictionary dict = WordleDictionaryLoader.uploadingFiveLetterWords();
         Random random = new Random();
@@ -30,7 +31,7 @@ public class Wordle {
             }
             String word = scanner.nextLine();
             if (answer.equals(word)){
-                System.out.printf("Вы отгадали слово: %s", game.getAnswer());
+                System.out.printf("Вы отгадали слово: %s\n", game.getAnswer());
                 break;
             }
             String answerToTheWord = game.analyze(word);
@@ -38,7 +39,7 @@ public class Wordle {
                 System.out.println(answerToTheWord);
                 if (word.isEmpty()) System.out.println(game.analyze(answerToTheWord));
             } else {
-                System.out.println("Слово введено некорректно или несоответствует параметрам");
+                throw new GameStateException("Слово введено некорректно или несоответствует параметрам");
             }
         }
     }
