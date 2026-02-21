@@ -124,7 +124,7 @@ public class WordleDictionary {
             // которые там есть но находятся не на своем месте,
             // и проверка чтобы они были на другом месте в слове - подсказке
             if (!word.contains(t.toString())) return false;
-            for (int i : guessLettersNotOnYourPlace.get(t)){
+            for (int i : guessLettersNotOnYourPlace.get(t)) {
                 if (word.charAt(t) == i) return false;
             }
         }
