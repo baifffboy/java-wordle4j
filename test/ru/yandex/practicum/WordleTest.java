@@ -140,7 +140,7 @@ public class WordleTest {
     @Test
     void getHelpWord_ShouldExcludeUsedWords() {
         Map<Integer, String> history = new HashMap<>();
-        history.put(1, "книга"); // уже использовали ответ
+        history.put(1, "книга");
 
         String helpWord = dictionary.getHelpWord(history, answer);
         assertNotEquals("книга", helpWord);
