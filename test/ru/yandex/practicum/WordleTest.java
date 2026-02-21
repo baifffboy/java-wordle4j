@@ -312,16 +312,16 @@ public class WordleTest {
         WordleDictionary dict = new WordleDictionary(testWords);
         Map<String, String> comparisonMap = new HashMap<>();
         Map<Integer, Character> guessLettersOnPlace = new HashMap<>();
-        Map<Integer, Character> guessLettersNotOnPlace = new HashMap<>();
+        Map<Character, ArrayList<Integer>> guessLettersNotOnYourPlace = new HashMap<>();
         Set<Character> lettersNotExist = new HashSet<>();
         Map<Integer, String> history = new HashMap<>();
 
         // Не должно быть исключений
-        dict.fillCurrentValues(comparisonMap, guessLettersOnPlace, guessLettersNotOnPlace,
+        dict.fillCurrentValues(comparisonMap, guessLettersOnPlace, guessLettersNotOnYourPlace,
                 lettersNotExist, history, answer);
 
         assertTrue(guessLettersOnPlace.isEmpty());
-        assertTrue(guessLettersNotOnPlace.isEmpty());
+        assertTrue(guessLettersNotOnYourPlace.isEmpty());
         assertTrue(lettersNotExist.isEmpty());
     }
 

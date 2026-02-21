@@ -79,7 +79,7 @@ public class WordleDictionary {
     public String getHelpWord(Map<Integer, String> historyOfWords, String answer) {
         Map<String, String> comparisonMap = comparisonAllHistoryWords(historyOfWords, answer);
         Map<Integer, Character> guessLettersOnYourPlace = new HashMap<>(LENGTH_OF_WORD);
-        Map<Integer, Character> guessLettersNotOnYourPlace = new HashMap<>(LENGTH_OF_WORD);
+        Map<Character, ArrayList<Integer>> guessLettersNotOnYourPlace = new HashMap<>(LENGTH_OF_WORD);
         Set<Character> lettersThatNotExist = new HashSet<>();
 
         fillCurrentValues(comparisonMap, guessLettersOnYourPlace, guessLettersNotOnYourPlace, lettersThatNotExist,
@@ -119,12 +119,14 @@ public class WordleDictionary {
         return true;
     }
 
-    public boolean isLetterInWordExistButNotOnYourPlace(Map<Integer, Character> guessLettersNotOnYourPlace, String word) {
-        for (int t : guessLettersNotOnYourPlace.keySet()) { // проверка находятся ли в слове те буквы
+    public boolean isLetterInWordExistButNotOnYourPlace(Map<Character, ArrayList<Integer>> guessLettersNotOnYourPlace, String word) {
+        for (Character t : guessLettersNotOnYourPlace.keySet()) { // проверка находятся ли в слове те буквы
             // которые там есть но находятся не на своем месте,
             // и проверка чтобы они были на другом месте в слове - подсказке
-            if (!word.contains(guessLettersNotOnYourPlace.get(t).toString())) return false;
-            if (word.charAt(t) == guessLettersNotOnYourPlace.get(t)) return false;
+            if (!word.contains(t.toString())) return false;
+            for (int i : guessLettersNotOnYourPlace.get(t)){
+                if (word.charAt(t) == i) return false;
+            }
         }
         return true;
     }
@@ -146,7 +148,7 @@ public class WordleDictionary {
     }
 
     public void fillCurrentValues(Map<String, String> comparisonMap, Map<Integer, Character> guessLettersOnYourPlace,
-                                  Map<Integer, Character> guessLettersNotOnYourPlace, Set<Character> lettersThatNotExist,
+                                  Map<Character, ArrayList<Integer>> guessLettersNotOnYourPlace, Set<Character> lettersThatNotExist,
                                   Map<Integer, String> historyOfWords, String answer) {
         for (String str : comparisonMap.keySet()) {
             String lastComparison = comparisonMap.get(str);
@@ -155,8 +157,8 @@ public class WordleDictionary {
                 for (char i : lastComparison.toCharArray()) {
                     if (i == '+' && !guessLettersOnYourPlace.containsValue(str.charAt(index))) {
                         guessLettersOnYourPlace.put(index, str.charAt(index));
-                        if (lettersThatNotExist.contains(str.charAt(index))) {
-                            lettersThatNotExist.remove(str.charAt(index));
+                        if (guessLettersNotOnYourPlace.containsKey(str.charAt(index))) {
+                            guessLettersNotOnYourPlace.remove(str.charAt(index));
                         }
                     }
                     index++;
@@ -165,11 +167,11 @@ public class WordleDictionary {
             if (lastComparison.contains("^")) {
                 int index = 0;
                 for (char i : lastComparison.toCharArray()) {
-                    if (i == '^' && !guessLettersNotOnYourPlace.containsValue(str.charAt(index))) {
-                        guessLettersNotOnYourPlace.put(index, str.charAt(index));
-                        if (lettersThatNotExist.contains(str.charAt(index))) {
-                            lettersThatNotExist.remove(str.charAt(index));
+                    if (i == '^') {
+                        if (!guessLettersNotOnYourPlace.containsValue(str.charAt(index))) {
+                            guessLettersNotOnYourPlace.put(str.charAt(index), new ArrayList<>());
                         }
+                        guessLettersNotOnYourPlace.get(str.charAt(index)).add(index);
                     }
                     index++;
                 }
