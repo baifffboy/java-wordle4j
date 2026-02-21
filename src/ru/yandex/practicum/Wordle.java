@@ -1,5 +1,10 @@
 package ru.yandex.practicum;
 
+import ru.yandex.practicum.exception.DictionaryLoadException;
+import ru.yandex.practicum.exception.GameStateException;
+import ru.yandex.practicum.exception.InvalidWordLengthException;
+import ru.yandex.practicum.exception.WordNotFoundException;
+
 import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
@@ -25,7 +30,7 @@ public class Wordle {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             if (game.getSteps() == COUNT_OF_STEP) {
-                System.out.println("Вы проиграли!");
+                System.out.printf("Вы проиграли! Загаданное слово: %s\n", game.getAnswer());
                 break;
             }
             String word = scanner.nextLine();

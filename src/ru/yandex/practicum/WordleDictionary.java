@@ -1,5 +1,8 @@
 package ru.yandex.practicum;
 
+import ru.yandex.practicum.exception.InvalidWordLengthException;
+import ru.yandex.practicum.exception.WordNotFoundException;
+
 import java.util.*;
 
 /*

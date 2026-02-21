@@ -1,4 +1,4 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.exception;
 
 public class WordNotFoundException extends WordleException {
     private final String word;

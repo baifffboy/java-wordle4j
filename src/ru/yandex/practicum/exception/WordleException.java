@@ -1,4 +1,4 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.exception;
 
 public class WordleException extends Exception {
     public WordleException(String message) {

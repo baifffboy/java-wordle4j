@@ -1,4 +1,4 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.exception;
 
 public class InvalidWordLengthException extends WordleException {
     private final int expectedLength;
