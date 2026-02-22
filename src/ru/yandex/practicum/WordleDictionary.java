@@ -1,8 +1,5 @@
 package ru.yandex.practicum;
 
-import ru.yandex.practicum.exception.InvalidWordLengthException;
-import ru.yandex.practicum.exception.WordNotFoundException;
-
 import java.util.*;
 
 /*
@@ -14,6 +11,9 @@ public class WordleDictionary {
 
     private final List<String> words;
     public static final int LENGTH_OF_WORD = 5;
+    private Map<Integer, Character> guessLettersOnYourPlace = new HashMap<>(LENGTH_OF_WORD);
+    private Map<Character, ArrayList<Integer>> guessLettersNotOnYourPlace = new HashMap<>(LENGTH_OF_WORD);
+    private Set<Character> lettersThatNotExist = new HashSet<>();
 
     public WordleDictionary(List<String> words) {
         this.words = new ArrayList<>(words);
@@ -23,86 +23,95 @@ public class WordleDictionary {
         return words;
     }
 
-    public boolean check(String word) throws InvalidWordLengthException, WordNotFoundException {
+    public boolean check(String word) {
         if (word.length() == LENGTH_OF_WORD) {
             for (String i : words) {
                 if (i.equals(word)) {
                     return true;
                 }
             }
-            throw new WordNotFoundException(word);
+            System.out.printf("Слово %s введено некорректно или не существует в словаре", word);
         } else {
-            throw new InvalidWordLengthException(LENGTH_OF_WORD, word.length());
+            System.out.printf("Слово должно содержать %d букв, а содержит %d", LENGTH_OF_WORD, word.length());
         }
+        return false;
     }
 
     public String comparisonWords(String word, String answer) {
         StringBuilder signsAnswer = new StringBuilder(LENGTH_OF_WORD);
-        return checkInCycleWithRecursion(word, answer, signsAnswer, 0).toString();
+        List<Boolean> isLetterCheckInAnswer = new ArrayList<>(5);
+        for (int i = 0; i < 5; i++) isLetterCheckInAnswer.add(false);
+        return checkInCycleWithRecursion(word, answer, signsAnswer, 0, isLetterCheckInAnswer).toString();
     }
 
-    public StringBuilder checkInCycleWithRecursion(String word, String answer, StringBuilder signsAnswer, int currentIndex) {
-        char currentLetterCheck = answer.toCharArray()[0];
-        if (currentIndex == 4) {
-            for (char words : word.toCharArray()) {
-                if (words == currentLetterCheck) {
-                    if (currentIndex == word.indexOf(words)) {
-                        signsAnswer.append('+');
-                    } else {
-                        signsAnswer.append('^');
-                    }
-                    break;
-                }
-            }
-            if (signsAnswer.length() < currentIndex + 1) {
-                signsAnswer.append('-');
-            }
-        } else {
-            for (char words : word.toCharArray()) {
-                if (words == currentLetterCheck) {
-                    if (currentIndex == word.indexOf(words)) {
-                        signsAnswer.append('+');
-                    } else {
-                        signsAnswer.append('^');
-                    }
-                    break;
-                }
-            }
-            if (signsAnswer.length() < currentIndex + 1) {
-                signsAnswer.append('-');
-            }
-            return checkInCycleWithRecursion(word, answer.substring(1), signsAnswer, currentIndex + 1);
+    public StringBuilder checkInCycleWithRecursion(String word, String answer, StringBuilder signsAnswer,
+                                                   int currentIndex, List<Boolean> isLetterCheckInAnswer) {
+        char currentLetterCheck = word.toCharArray()[0];
+        checkInCycle(answer, signsAnswer, currentIndex, isLetterCheckInAnswer, currentLetterCheck, word);
+        if (currentIndex != 4) {
+            return checkInCycleWithRecursion(word.substring(1), answer, signsAnswer,
+                    currentIndex + 1, isLetterCheckInAnswer);
         }
         return signsAnswer;
     }
 
+    public void checkInCycle(String answer, StringBuilder signsAnswer,
+                             int currentIndex, List<Boolean> isLetterCheckInAnswer, char currentLetterCheck, String word) {
+        for (int i = 0; i < answer.length(); i++) {
+            if (answer.toCharArray()[i] == currentLetterCheck && isLetterCheckInAnswer.get(i) == false) {
+                if (currentIndex == i) {
+                    signsAnswer.append('+');
+                } else signsAnswer.append('^');
+                isLetterCheckInAnswer.set(i, true);
+                break;
+            } else if (answer.toCharArray()[i] == currentLetterCheck && isLetterCheckInAnswer.get(i) == true
+                    && currentIndex == i && i + 1 < answer.length()) { // если буква в слове-предположении уже завоевала ^ но ей пришла на смену
+                // вторая которая стоит на своем месте
+                while (signsAnswer.length() <= i) {
+                    signsAnswer.append('-');
+                }
+                signsAnswer.setCharAt(i, '+');
+                for (int t = 0; t < signsAnswer.length(); t++) {
+                    if (t < word.length() && signsAnswer.charAt(t) == '^'
+                            && word.charAt(t) == currentLetterCheck) {
+                        signsAnswer.setCharAt(t, '-');
+                        break;
+                    }
+                }
+            }
+        }
+        if (signsAnswer.length() < currentIndex + 1) {
+            signsAnswer.append('-');
+        }
+    }
+
     public String getHelpWord(Map<Integer, String> historyOfWords, String answer) {
         Map<String, String> comparisonMap = comparisonAllHistoryWords(historyOfWords, answer);
-        Map<Integer, Character> guessLettersOnYourPlace = new HashMap<>(LENGTH_OF_WORD);
-        Map<Character, ArrayList<Integer>> guessLettersNotOnYourPlace = new HashMap<>(LENGTH_OF_WORD);
-        Set<Character> lettersThatNotExist = new HashSet<>();
 
-        fillCurrentValues(comparisonMap, guessLettersOnYourPlace, guessLettersNotOnYourPlace, lettersThatNotExist,
-                historyOfWords, answer);
+        fillCurrentValues(comparisonMap);
 
         String helpWord = null;
         for (String i : words) {
-            if (isLetterThatNotExistInWord(lettersThatNotExist, i) && !isWordInHistoryOfWords(i, historyOfWords)) {
-                if (!isLetterInWordExistOnYourPlace(guessLettersOnYourPlace, i) ||
-                        !isLetterInWordExistButNotOnYourPlace(guessLettersNotOnYourPlace, i)) continue;
-                else {
-                    helpWord = i;
-                    break;
-                }
+            if (isLetterThatNotExistInWord(lettersThatNotExist, i) && !isWordInHistoryOfWords(i, historyOfWords)
+                    && isLetterInWordExistOnYourPlace(guessLettersOnYourPlace, i) &&
+                    isLetterInWordExistButNotOnYourPlace(guessLettersNotOnYourPlace, i) &&
+                    !isAllLetterInWordDontExistInAnswerOrAllLetterExist(i, answer)) {
+                helpWord = i;
+                break;
             }
         }
 
         if (helpWord == null) {
-            Random random = new Random();
-            return words.get(random.nextInt(words.size()));
+            for (String i : words) {
+                if (comparisonWords(i, answer).equals("+++++")) return i;
+            }
         }
 
         return helpWord;
+    }
+
+    public boolean isAllLetterInWordDontExistInAnswerOrAllLetterExist(String i, String answer) {
+        return (comparisonWords(i, answer).equals("-----") || comparisonWords(i, answer).equals("+++++"));
     }
 
     public boolean isWordInHistoryOfWords(String word, Map<Integer, String> historyOfWords) {
@@ -125,7 +134,7 @@ public class WordleDictionary {
             // и проверка чтобы они были на другом месте в слове - подсказке
             if (!word.contains(t.toString())) return false;
             for (int i : guessLettersNotOnYourPlace.get(t)) {
-                if (word.charAt(t) == i) return false;
+                if (word.indexOf(t) == i) return false;
             }
         }
         return true;
@@ -147,15 +156,13 @@ public class WordleDictionary {
         return comparisonMap;
     }
 
-    public void fillCurrentValues(Map<String, String> comparisonMap, Map<Integer, Character> guessLettersOnYourPlace,
-                                  Map<Character, ArrayList<Integer>> guessLettersNotOnYourPlace, Set<Character> lettersThatNotExist,
-                                  Map<Integer, String> historyOfWords, String answer) {
+    public void fillCurrentValues(Map<String, String> comparisonMap) {
         for (String str : comparisonMap.keySet()) {
             String lastComparison = comparisonMap.get(str);
             if (lastComparison.contains("+")) {
                 int index = 0;
                 for (char i : lastComparison.toCharArray()) {
-                    if (i == '+' && !guessLettersOnYourPlace.containsValue(str.charAt(index))) {
+                    if (i == '+') {
                         guessLettersOnYourPlace.put(index, str.charAt(index));
                         if (guessLettersNotOnYourPlace.containsKey(str.charAt(index))) {
                             guessLettersNotOnYourPlace.remove(str.charAt(index));
@@ -167,8 +174,8 @@ public class WordleDictionary {
             if (lastComparison.contains("^")) {
                 int index = 0;
                 for (char i : lastComparison.toCharArray()) {
-                    if (i == '^') {
-                        if (!guessLettersNotOnYourPlace.containsValue(str.charAt(index))) {
+                    if (i == '^' && !guessLettersOnYourPlace.containsValue(str.charAt(index))) {
+                        if (!guessLettersNotOnYourPlace.containsKey(str.charAt(index))) {
                             guessLettersNotOnYourPlace.put(str.charAt(index), new ArrayList<>());
                         }
                         guessLettersNotOnYourPlace.get(str.charAt(index)).add(index);
@@ -177,13 +184,13 @@ public class WordleDictionary {
                 }
             }
             if (lastComparison.contains("-")) {
-                for (int t : historyOfWords.keySet()) {
-                    String intermediateResult = comparisonWords(historyOfWords.get(t), answer);
-                    int index = 0;
-                    for (char i : intermediateResult.toCharArray()) {
-                        if (i == '-') lettersThatNotExist.add(historyOfWords.get(t).toCharArray()[index]);
-                        index++;
+                int index = 0;
+                for (int j = 0; j < lastComparison.length(); j++) {
+                    if (lastComparison.charAt(j) == '-' && !guessLettersOnYourPlace.containsValue(str.charAt(index))
+                            && !guessLettersNotOnYourPlace.containsKey(str.charAt(index))) {
+                        lettersThatNotExist.add(str.charAt(j));
                     }
+                    index++;
                 }
             }
         }

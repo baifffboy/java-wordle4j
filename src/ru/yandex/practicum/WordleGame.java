@@ -1,8 +1,5 @@
 package ru.yandex.practicum;
 
-import ru.yandex.practicum.exception.InvalidWordLengthException;
-import ru.yandex.practicum.exception.WordNotFoundException;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -49,9 +46,9 @@ public class WordleGame {
         this.steps = steps;
     }
 
-    public String analyze(String word) throws WordNotFoundException, InvalidWordLengthException {
+    public String analyze(String word) {
         if (word.isEmpty()) {
-            return getHelp(historyOfWords, answer);
+            return dictionary.getHelpWord(historyOfWords, answer);
         }
         if (dictionary.check(word)) {
             setSteps(getSteps() + 1);
@@ -64,10 +61,6 @@ public class WordleGame {
 
     public void addWord(String word) {
         historyOfWords.put(getSteps(), word);
-    }
-
-    public String getHelp(Map<Integer, String> historyOfWords, String answer) {
-        return dictionary.getHelpWord(historyOfWords, answer);
     }
 
 }

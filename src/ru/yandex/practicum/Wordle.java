@@ -2,8 +2,6 @@ package ru.yandex.practicum;
 
 import ru.yandex.practicum.exception.DictionaryLoadException;
 import ru.yandex.practicum.exception.GameStateException;
-import ru.yandex.practicum.exception.InvalidWordLengthException;
-import ru.yandex.practicum.exception.WordNotFoundException;
 
 import java.io.IOException;
 import java.util.Random;
@@ -20,7 +18,7 @@ import java.util.Scanner;
  */
 public class Wordle {
 
-    public static void main(String[] args) throws IOException, GameStateException, DictionaryLoadException, WordNotFoundException, InvalidWordLengthException {
+    public static void main(String[] args) throws IOException, GameStateException, DictionaryLoadException {
         final int COUNT_OF_STEP = 6;
         WordleDictionary dict = WordleDictionaryLoader.uploadingFiveLetterWords();
         Random random = new Random();
@@ -30,7 +28,7 @@ public class Wordle {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             if (game.getSteps() == COUNT_OF_STEP) {
-                System.out.printf("Вы проиграли! Загаданное слово: %s\n", game.getAnswer());
+                System.out.printf("Вы проиграли! Загаданное слово: %s\n", answer);
                 break;
             }
             String word = scanner.nextLine();
@@ -41,10 +39,18 @@ public class Wordle {
             String answerToTheWord = game.analyze(word);
             if (answerToTheWord != null) {
                 System.out.println(answerToTheWord);
-                if (word.isEmpty()) System.out.println(game.analyze(answerToTheWord));
+                if (word.isEmpty()) {
+                    word = game.analyze(answerToTheWord);
+                    System.out.println(word);
+                    if (word.equals("+++++")) {
+                        System.out.printf("Вы отгадали слово: %s\n", game.getAnswer());
+                        break;
+                    }
+                }
             } else {
                 throw new GameStateException("Слово введено некорректно или несоответствует параметрам");
             }
         }
     }
 }
+
