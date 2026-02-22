@@ -1,7 +1,6 @@
 package ru.yandex.practicum;
 
 import ru.yandex.practicum.exception.DictionaryLoadException;
-import ru.yandex.practicum.exception.GameStateException;
 
 import java.io.IOException;
 import java.util.Random;
@@ -18,7 +17,7 @@ import java.util.Scanner;
  */
 public class Wordle {
 
-    public static void main(String[] args) throws IOException, GameStateException, DictionaryLoadException {
+    public static void main(String[] args) throws IOException, DictionaryLoadException {
         final int COUNT_OF_STEP = 6;
         WordleDictionary dict = WordleDictionaryLoader.uploadingFiveLetterWords();
         Random random = new Random();
@@ -47,8 +46,6 @@ public class Wordle {
                         break;
                     }
                 }
-            } else {
-                throw new GameStateException("Слово введено некорректно или несоответствует параметрам");
             }
         }
     }

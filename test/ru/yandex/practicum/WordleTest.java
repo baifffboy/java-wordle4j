@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.api.io.TempDir;
 import ru.yandex.practicum.exception.DictionaryLoadException;
-import ru.yandex.practicum.exception.GameStateException;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -47,13 +46,6 @@ public class WordleTest {
         assertEquals(filePath, exception.getFilePath());
         assertTrue(exception.getMessage().contains(filePath));
         assertEquals(cause, exception.getCause());
-    }
-
-    @Test
-    void gameStateException_ShouldStoreMessage() {
-        String message = "Invalid game state";
-        GameStateException exception = new GameStateException(message);
-        assertEquals(message, exception.getMessage());
     }
 
     @Test
