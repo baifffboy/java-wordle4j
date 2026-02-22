@@ -30,9 +30,9 @@ public class WordleDictionary {
                     return true;
                 }
             }
-            System.out.printf("Слово %s введено некорректно или не существует в словаре", word);
+            System.out.printf("Слово %s введено некорректно или не существует в словаре\n", word);
         } else {
-            System.out.printf("Слово должно содержать %d букв, а содержит %d", LENGTH_OF_WORD, word.length());
+            System.out.printf("Слово должно содержать %d букв, а содержит %d\n", LENGTH_OF_WORD, word.length());
         }
         return false;
     }
